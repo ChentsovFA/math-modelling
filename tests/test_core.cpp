@@ -1,6 +1,6 @@
 /**
  * @file tests/test_core.cpp
- * @author Mikhail Lozhnikov
+ * @author chentsovfedor
  *
  * Файл содержит внешние переменные, используемые в классе TestSuite.
  */

@@ -1,6 +1,6 @@
 /**
  * @file tests/test_core.hpp
- * @author Mikhail Lozhnikov
+ * @author chentsovfedor
  *
  * Реализация тестового фреймворка.
  */

@@ -1,6 +1,6 @@
 /**
  * @file include/abstract_solver.hpp
- * @author Mikhail Lozhnikov
+ * @author chentsovfedor
  *
  * Абстрактный класс решалки.
  */
@@ -20,17 +20,17 @@ namespace mm {
 template<typename T>
 class AbstractSolver {
  protected:
-  //! Текущее время.
+  // Текущее сейчасвремя.
   T t;
-  //! Шаг по времени.
+  //Шаг по времени.
   T tau;
-  //! Конечное время.
+  // Конечное время.
   T finishTime;
-  //! Временной интервал сохранения данных.
+  //временной интервал сохранения данных.
   T exportPeriod;
 
  public:
-  //! Тип данных, используемый для арифметики.
+  //nип данных, используемый для арифметики.
   using ValueType = T;
 
   /**

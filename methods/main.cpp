@@ -1,6 +1,6 @@
 /**
  * @file methods/main.cpp
- * @author Mikhail Lozhnikov
+ * @author chentsovfedor
  *
  * Файл с функией main() для серверной части программы.
  */
@@ -15,13 +15,17 @@
 
 using json = nlohmann::json;
 
+//mm::TasksQueue tasksQueue;
+//Делаю глобальной переменной, чтоб HeatEquationMethod
+// имел доступ к очереди задач
+
 int main(int argc, char* argv[]) {
   // Порт по-умолчанию.
   int port = 8080;
 
   if (argc >= 2) {
-    // Меняем порт по умолчанию, если предоставлен соответствующий
-    // аргумент командной строки.
+    //Меняем порт по умолчанию, если предоставлен соответствующий
+    //аргумент командной строки.
     if (std::sscanf(argv[1], "%d", &port) != 1)
       return -1;
   }
@@ -32,8 +36,8 @@ int main(int argc, char* argv[]) {
 
   mm::TasksQueue tasksQueue;
 
-  // Обработчик для GET запроса по адресу /stop. Этот обработчик
-  // останавливает сервер.
+  //Обработчик для GET запроса по адресу /stop. Этот обработчик
+  //останавливает сервер.
   svr.Get("/stop", [&](const httplib::Request&, httplib::Response&) {
     svr.stop();
   });
@@ -54,7 +58,7 @@ int main(int argc, char* argv[]) {
     output["id"] = taskId;
 
     if (tasksQueue.IsTaskFinished(taskId)) {
-      // Задача завершена можно скачивать данные.
+      //задача завершена можно скачивать данные.
       output["status"] = "finished";
     } else {
       /* Задача либо не была добавлена, либо она ещё не досчиталась,
@@ -108,7 +112,18 @@ int main(int argc, char* argv[]) {
 
 
   /* Сюда нужно вставить обработчик post запроса для алгоритма. */
-
+  svr.Post("/HeatEquation", [&](const httplib::Request& req,
+  httplib::Response& res) {
+    nlohmann::json input = nlohmann::json::parse(req.body);
+    nlohmann::json output;
+    int taskId = mm::HeatEquationMethod(input, &output,
+                                        tasksQueue);
+    output["id"] = taskId;
+    res.set_content(output.dump(), "application/json");
+  });
+  // Вызывает метод POST у нашего сервера svr
+  // "/HeatEquation" -- путь, по которому принимает POST-запрос
+  // лямбда-функция для запуска задачи и получения результата по id
 
 
 
