@@ -2,7 +2,8 @@
  * @file tests/heat_equation_test.cpp
  * @brief Модульные тесты для решателя теплопроводности.
  */
-
+#include <math.h>      // C system - для линтера
+// так как просто cmath его не устраивает
 #include <cmath>
 // для математических функций
 #include <chrono>
