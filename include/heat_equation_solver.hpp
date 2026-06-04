@@ -36,7 +36,7 @@ namespace mm {
      */
     template<typename T>
     class HeatEquationSolver : public AbstractSolver<T> {
-    public:
+     public:
         using InitialFunc = std::function<T(size_t, size_t)>;
 
         /**
@@ -73,7 +73,7 @@ namespace mm {
         bool MakeStep() override;
         void ExportData(nlohmann::json* output) override;
 
-  private:
+     private:
     size_t M_;                    // Число разбиений на единицу длины
     size_t numThreads_;           // Количество потоков
     T h_;                         // Шаг сетки
@@ -153,16 +153,16 @@ namespace mm {
                     1e-12 && y >= 0 && y <= 3.0) {
                         // Левая граница: u = y
                         u_[Index(i, j)] = y;
-                    } else if (std::abs(x - 3.0) < 
+                    } else if (std::abs(x - 3.0) <
                     1e-12 && y >= 2.0 && y <= 3.0) {
                         // Правая верхняя часть: u = 4
                         u_[Index(i, j)] = 4;
-                    } else if (std::abs(y - 2.0) < 
+                    } else if (std::abs(y - 2.0) <
                     1e-12 && x >= 2.0 && x <= 3.0 &&
                         !IsInCutout(i, j)) {
                         // Верхняя часть выреза: u = 1 + x
                         u_[Index(i, j)] = 1 + x;
-                    } else if (std::abs(y - 1.0) < 
+                    } else if (std::abs(y - 1.0) <
                     1e-12 && x >= 2.0 && x <= 3.0 &&
                         !IsInCutout(i, j)) {
                         // Нижняя часть выреза: u = 2 - x

@@ -30,7 +30,7 @@ namespace mm {
             return nullptr;
         } else if (type == "random") {
             auto rng = std::make_shared<std::mt19937>(
-			std::random_device {}());
+            std::random_device {}());
             auto dist =
             std::make_shared<std::uniform_real_distribution<double>>(
                 -5.0, 5.0);

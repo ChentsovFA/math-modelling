@@ -87,7 +87,7 @@ static void TestBoundaryConditions() {
         REQUIRE_CLOSE(getValue(y2, x2), 3.0, 1e-9);
     }
     if (!solver.IsInCutoutPublic(y2, x3)) {
-		REQUIRE_CLOSE(getValue(y2, x3), 4.0, 1e-9);
+        REQUIRE_CLOSE(getValue(y2, x3), 4.0, 1e-9);
     }
 
     // Нижняя часть выреза (y=1, x∈[2,3]): u = 2 - x
