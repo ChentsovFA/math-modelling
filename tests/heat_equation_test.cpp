@@ -4,13 +4,21 @@
  */
 
 #include <cmath>
+// для математических функций
 #include <chrono>
+// для паузы между запросами
 #include <iostream>
+// для std::cerr
 #include <random>
+// для случайного начального распределения
 #include <thread>
+// для многопоточности
 #include <httplib.h>
+// для HTTP-запросов
 #include <nlohmann/json.hpp>
+// для работы с JSON
 #include "heat_equation_solver.hpp"
+// И ещё
 #include "test_core.hpp"
 
  /**
