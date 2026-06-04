@@ -28,7 +28,7 @@ class TasksQueue {
   std::queue<std::pair<int, AbstractSolverWrapper*>> tasks;
   //! Данные завершенныхзадач.
   std::unordered_map<int, nlohmann::json> finishedTasksData;
-  //дентификатор последней задачи.
+  // Идентификатор последней задачи.
   int lastTaskId;
   //! Индикатор завершения очереди обработки задач.
   bool finished;

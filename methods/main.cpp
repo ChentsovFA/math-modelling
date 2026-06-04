@@ -53,8 +53,7 @@ int main(int argc, char* argv[]) {
 
             if (tasksQueue.IsTaskFinished(taskId)) {
                 output["status"] = "finished";
-            }
-            else {
+            } else {
                 output["status"] = "unknown";
             }
 
@@ -69,8 +68,7 @@ int main(int argc, char* argv[]) {
 
             if (tasksQueue.IsTaskFinished(taskId)) {
                 output = tasksQueue.GetFinishedTaskData(taskId);
-            }
-            else {
+            } else {
                 output["status"] = "unknown";
             }
 

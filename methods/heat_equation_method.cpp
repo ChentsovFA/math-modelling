@@ -28,14 +28,14 @@ namespace mm {
         MakeInitial(const std::string& type, size_t M = 0) {
         if (type == "zero" || type.empty()) {
             return nullptr;
-        }
-        else if (type == "random") {
-            auto rng = std::make_shared<std::mt19937>(std::random_device{}());
-            auto dist = std::make_shared<std::uniform_real_distribution<double>>(
+        } else if (type == "random") {
+            auto rng = std::make_shared<std::mt19937>(
+			std::random_device{}());
+            auto dist = 
+			std::make_shared<std::uniform_real_distribution<double>>(
                 -5.0, 5.0);
             return [rng, dist](size_t, size_t) { return (*dist)(*rng); };
-        }
-        else if (type == "sin") {
+        } else if (type == "sin") {
             if (M == 0) return nullptr;
             return [M](size_t i, size_t j) {
                 double x = static_cast<double>(j) / static_cast<double>(3 * M);

@@ -7,11 +7,11 @@
 #include <random>
 #include <thread>
 #include <chrono>
-#include <iostream>  
-#include <httplib.h>
+#include <iostream>
 #include <nlohmann/json.hpp>
 #include "heat_equation_solver.hpp"
 #include "test_core.hpp"
+#include <httplib.h>
 
  /**
   * @brief Проверка граничных условий.
@@ -177,7 +177,8 @@ static void TestRandomInitial() {
 
     auto init_func = [&](size_t, size_t) { return dist(rng); };
 
-    mm::HeatEquationSolver<double> solver(M, tau, finishTime, finishTime, init_func);
+    mm::HeatEquationSolver<double> solver(
+	M, tau, finishTime, finishTime, init_func);
     nlohmann::json result;
     bool ok = solver.Solve(&result);
     REQUIRE(ok);

@@ -73,8 +73,8 @@ namespace mm {
         bool MakeStep() override;
         void ExportData(nlohmann::json* output) override;
 
-    private:
-        size_t M_;                    // Число разбиений на единицу длины
+  private:
+    size_t M_;                    // Число разбиений на единицу длины
         size_t numThreads_;           // Количество потоков
         T h_;                         // Шаг сетки
         std::vector<T> u_;            // Текущий слой
@@ -118,7 +118,9 @@ namespace mm {
          */
         bool IsInterior(size_t i, size_t j) const {
             if (IsInCutout(i, j)) return false;
-            if (i == 0 || i == Ny() - 1 || j == 0 || j == Nx() - 1) return false;
+            if (i == 0 || i == Ny(
+			) - 1 || j == 0 || j == Nx(
+			) - 1) return false;
             return true;
         }
 
@@ -147,33 +149,31 @@ namespace mm {
                     // Нижняя граница: u = 0
                     if (std::abs(y) < 1e-12 && x >= 0 && x <= 3.0) {
                         u_[Index(i, j)] = 0;
-                    }
-                    else if (std::abs(x) < 1e-12 && y >= 0 && y <= 3.0) {
+                    } else if (std::abs(x) < 
+					1e-12 && y >= 0 && y <= 3.0) {
                         // Левая граница: u = y
                         u_[Index(i, j)] = y;
-                    }
-                    else if (std::abs(x - 3.0) < 1e-12 && y >= 2.0 && y <= 3.0) {
+                    } else if (std::abs(x - 3.0) < 
+					1e-12 && y >= 2.0 && y <= 3.0) {
                         // Правая верхняя часть: u = 4
                         u_[Index(i, j)] = 4;
-                    }
-                    else if (std::abs(y - 2.0) < 1e-12 && x >= 2.0 && x <= 3.0 &&
+                    } else if (std::abs(y - 2.0) < 
+					1e-12 && x >= 2.0 && x <= 3.0 &&
                         !IsInCutout(i, j)) {
                         // Верхняя часть выреза: u = 1 + x
                         u_[Index(i, j)] = 1 + x;
-                    }
-                    else if (std::abs(y - 1.0) < 1e-12 && x >= 2.0 && x <= 3.0 &&
+                    } else if (std::abs(y - 1.0) < 
+					1e-12 && x >= 2.0 && x <= 3.0 &&
                         !IsInCutout(i, j)) {
                         // Нижняя часть выреза: u = 2 - x
                         u_[Index(i, j)] = 2 - x;
-                    }
-                    else if (std::abs(x - 3.0) < 1e-12 && y >= 0 && y <= 1.0) {
+                    } else if (std::abs(x - 3.0) <
+					1e-12 && y >= 0 && y <= 1.0) {
                         // Правая нижняя часть: u = -y
                         u_[Index(i, j)] = -y;
-                    }
-                    else if (initial_) {
+                    } else if (initial_) {
                         u_[Index(i, j)] = initial_(i, j);
-                    }
-                    else {
+                    } else {
                         u_[Index(i, j)] = 0;
                     }
                 }
@@ -232,7 +232,9 @@ namespace mm {
 
         for (size_t t = 0; t < numThreads_; ++t) {
             size_t startRow = 1 + t * rowsPerThread;
-            size_t endRow = (t == numThreads_ - 1) ? N - 1 : startRow + rowsPerThread;
+            size_t endRow = (
+			t == numThreads_ - 1) ? N - 1 : startRow + 
+			rowsPerThread;
 
             threads.emplace_back([this, startRow, endRow]() {
                 MakeStepRange(startRow, endRow);
@@ -254,26 +256,21 @@ namespace mm {
                 // Нижняя граница: u = 0
                 if (std::abs(y) < 1e-12 && x >= 0 && x <= 3.0) {
                     u_next_[Index(i, j)] = 0;
-                }
-                else if (std::abs(x) < 1e-12 && y >= 0 && y <= 3.0) {
+                } else if (std::abs(x) < 1e-12 && y >= 0 && y <= 3.0) {
                     // Левая граница: u = y
                     u_next_[Index(i, j)] = y;
-                }
-                else if (std::abs(x - 3.0) < 1e-12 && y >= 2.0 && y <= 3.0) {
+                } else if (std::abs(x - 3.0) < 1e-12 && y >= 2.0 && y <= 3.0) {
                     // Правая верхняя часть: u = 4
                     u_next_[Index(i, j)] = 4;
-                }
-                else if (std::abs(y - 2.0) < 1e-12 && x >= 2.0 && x <= 3.0 &&
+                } else if (std::abs(y - 2.0) < 1e-12 && x >= 2.0 && x <= 3.0 &&
                     !IsInCutout(i, j)) {
                     // Верхняя часть выреза: u = 1 + x
                     u_next_[Index(i, j)] = 1 + x;
-                }
-                else if (std::abs(y - 1.0) < 1e-12 && x >= 2.0 && x <= 3.0 &&
+                } else if (std::abs(y - 1.0) < 1e-12 && x >= 2.0 && x <= 3.0 &&
                     !IsInCutout(i, j)) {
                     // Нижняя часть выреза: u = 2 - x
                     u_next_[Index(i, j)] = 2 - x;
-                }
-                else if (std::abs(x - 3.0) < 1e-12 && y >= 0 && y <= 1.0) {
+                } else if (std::abs(x - 3.0) < 1e-12 && y >= 0 && y <= 1.0) {
                     // Правая нижняя часть: u = -y
                     u_next_[Index(i, j)] = -y;
                 }
@@ -294,7 +291,8 @@ namespace mm {
         size_t cutoutLeftJ = static_cast<size_t>(2.0 / h_ + 0.5);
         for (size_t i = 1; i < N - 1; ++i) {
             if (!IsInCutout(i, cutoutLeftJ)) {
-                u_next_[Index(i, cutoutLeftJ)] = u_next_[Index(i, cutoutLeftJ + 1)];
+                u_next_[Index(i, cutoutLeftJ)] = 
+				u_next_[Index(i, cutoutLeftJ + 1)];
             }
         }
 
@@ -314,8 +312,7 @@ namespace mm {
             for (size_t j = 0; j < N; ++j) {
                 if (IsInCutout(i, j)) {
                     row.push_back(nullptr);
-                }
-                else {
+                } else {
                     row.push_back(u_[Index(i, j)]);
                 }
             }

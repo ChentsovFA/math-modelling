@@ -85,14 +85,14 @@ namespace mm {
 
             delete solverWrapper;
 
-            double elapsed = duration_cast<milliseconds>(finish - start).count() /
+            double elapsed = duration_cast<milliseconds>(
+			finish - start).count() /
                 1000.0;
 
             if (status) {
                 data["status"] = "ok";
                 data["time"] = elapsed;
-            }
-            else {
+            } else {
                 data["status"] = "failed";
             }
 
