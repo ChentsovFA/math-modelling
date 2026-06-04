@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-from abstract_plotter import AbstractPlotter
+from plotters.abstract_plotter import AbstractPlotter
 import json
 
 

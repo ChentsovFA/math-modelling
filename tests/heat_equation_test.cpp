@@ -126,8 +126,8 @@ static void TestStability() {
             for (auto& val : row) {
                 if (!val.is_null()) {
                     double v = val.get<double>();
-                    REQUIRE(!isnan(v));
-                    REQUIRE(!isinf(v));
+                    REQUIRE(!std::isnan(v));
+                    REQUIRE(!std::isinf(v));
                 }
             }
         }
@@ -196,8 +196,8 @@ static void TestRandomInitial() {
             for (auto& val : row) {
                 if (!val.is_null()) {
                     double v = val.get<double>();
-                    REQUIRE(!isnan(v));
-                    REQUIRE(!isinf(v));
+                    REQUIRE(!std::isnan(v));
+                    REQUIRE(!std::isinf(v));
                     REQUIRE(fabs(v) < 1e6);
                 }
             }
