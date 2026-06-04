@@ -1,6 +1,6 @@
 /**
  * @file tasks_queue.hpp
- * @author chentsovfedor
+ * @author Mikhail Lozhnikov
  *
  * Класс очереди задач.
  */
@@ -24,19 +24,19 @@ namespace mm {
  */
 class TasksQueue {
  private:
-  //Очередь задач.
+  //! Очередь задач.
   std::queue<std::pair<int, AbstractSolverWrapper*>> tasks;
-  //Данные завершенныхзадач.
+  //! Данные завершенныхзадач.
   std::unordered_map<int, nlohmann::json> finishedTasksData;
-  //идентификатор последней задачи.
+  //дентификатор последней задачи.
   int lastTaskId;
-  //Индикатор завершения очереди обработки задач.
+  //! Индикатор завершения очереди обработки задач.
   bool finished;
-  //ьютекс для внутренних структур.
+  //! Мьютекс для внутренних структур.
   std::mutex m;
-  //это условная переменная для начала обработки новой задачи.
+  //! Условная переменная для начала обработки новой задачи.
   std::condition_variable condvar;
-  //Описатель потока - обработчика задач.
+  //! Описатель потока - обработчика задач.
   std::thread queueThread;
 
  public:

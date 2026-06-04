@@ -1,6 +1,6 @@
 /**
  * @file abstract_solver_impl.hpp
- * @author chentsovfedor
+ * @author Mikhail Lozhnikov
  */
 
 #ifndef INCLUDE_ABSTRACT_SOLVER_IMPL_HPP_

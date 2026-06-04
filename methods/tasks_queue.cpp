@@ -1,6 +1,6 @@
 /**
  * @file tasks_queue.cpp
- * @author chentsovfedor
+ * @author Mikhail Lozhnikov
  */
 
 #include <chrono>

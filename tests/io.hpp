@@ -1,6 +1,6 @@
 /**
  * @file tests/io.hpp
- * @author chentsovfedor
+ * @author Mikhail Lozhnikov
  *
  * Перегруженные операторы для вывода структур данных в поток.
  */

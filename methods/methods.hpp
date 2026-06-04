@@ -1,6 +1,6 @@
 /**
  * @file methods/methods.hpp
- * @author chentsovfedor
+ * @author Mikhail Lozhnikov
  *
  * Объявления функций для серверной части алгоритмов.
  */

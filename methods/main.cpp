@@ -1,6 +1,6 @@
 /**
  * @file methods/main.cpp
- * @author chentsovfedor
+ * @author Mikhail Lozhnikov
  *
  * Файл с функией main() для серверной части программы.
  */
@@ -24,8 +24,8 @@ int main(int argc, char* argv[]) {
   int port = 8080;
 
   if (argc >= 2) {
-    //Меняем порт по умолчанию, если предоставлен соответствующий
-    //аргумент командной строки.
+    // Меняем порт по умолчанию, если предоставлен соответствующий
+    // аргумент командной строки.
     if (std::sscanf(argv[1], "%d", &port) != 1)
       return -1;
   }
@@ -36,8 +36,8 @@ int main(int argc, char* argv[]) {
 
   mm::TasksQueue tasksQueue;
 
-  //Обработчик для GET запроса по адресу /stop. Этот обработчик
-  //останавливает сервер.
+  // Обработчик для GET запроса по адресу /stop. Этот обработчик
+  // останавливает сервер.
   svr.Get("/stop", [&](const httplib::Request&, httplib::Response&) {
     svr.stop();
   });
@@ -58,7 +58,7 @@ int main(int argc, char* argv[]) {
     output["id"] = taskId;
 
     if (tasksQueue.IsTaskFinished(taskId)) {
-      //задача завершена можно скачивать данные.
+      // Задача завершена можно скачивать данные.
       output["status"] = "finished";
     } else {
       /* Задача либо не была добавлена, либо она ещё не досчиталась,
