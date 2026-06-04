@@ -16,14 +16,14 @@
 
 namespace mm {
 
-    //вспомогательная функция для начальных условий
-/**
- * @brief Создание функции начального условия по строковому типу
- *
- * @param type Тип начального условия ("zero", "random", "sin")
- * @param M Количество разбиений (нужно для sin)
- * @return Функция начального условия или nullptr
- */
+    // Вспомогательная функция для начальных условий
+    /**
+     * @brief Создание функции начального условия по строковому типу
+     *
+     * @param type Тип начального условия ("zero", "random", "sin")
+     * @param M Количество разбиений (нужно для sin)
+     * @return Функция начального условия или nullptr
+     */
     static typename HeatEquationSolver<double>::InitialFunc
         MakeInitial(const std::string& type, size_t M = 0) {
         if (type == "zero" || type.empty()) {
@@ -31,7 +31,8 @@ namespace mm {
         }
         else if (type == "random") {
             auto rng = std::make_shared<std::mt19937>(std::random_device{}());
-            auto dist = std::make_shared<std::uniform_real_distribution<double>>(-5.0, 5.0);
+            auto dist = std::make_shared<std::uniform_real_distribution<double>>(
+                -5.0, 5.0);
             return [rng, dist](size_t, size_t) { return (*dist)(*rng); };
         }
         else if (type == "sin") {
@@ -45,16 +46,17 @@ namespace mm {
         }
         return nullptr;
     }
+
     /**
- * @brief Серверный метод для решения уравнения теплопроводности
- *
- * Парсит JSON с параметрами, создаёт решатель и добавляет задачу в очередь
- *
- * @param input Входной JSON с параметрами (M, tau, finishTime, exportPeriod, num_threads, initial)
- * @param output Выходной JSON для записи ID задачи
- * @param tasksQueue Очередь задач сервера
- * @return ID созданной задачи
- */
+     * @brief Серверный метод для решения уравнения теплопроводности
+     *
+     * Парсит JSON с параметрами, создаёт решатель и добавляет задачу в очередь
+     *
+     * @param input Входной JSON с параметрами
+     * @param output Выходной JSON для записи ID задачи
+     * @param tasksQueue Очередь задач сервера
+     * @return ID созданной задачи
+     */
     int HeatEquationMethod(const nlohmann::json& input,
         nlohmann::json* output,
         mm::TasksQueue& tasksQueue) {
@@ -66,17 +68,16 @@ namespace mm {
         // Количество потоков (по умолчанию 4)
         size_t numThreads = input.value("num_threads", 4);
 
-        // Вот и начальное условие
+        // Начальное условие
         std::string initType = input.value("initial", "zero");
         auto initFunc = MakeInitial(initType, M);
 
-        //создание решателя и обёртки
+        // Создание решателя и обёртки
         auto* solver = new mm::HeatEquationSolver<double>(
-            M, tau, finishTime, exportPeriod, initFunc, numThreads
-        );
+            M, tau, finishTime, exportPeriod, initFunc, numThreads);
         auto* wrapper = new mm::DoubleAbstractSolverWrapper(solver);
 
-        //добавление в нашу очередь
+        // Добавление в очередь
         int taskId = tasksQueue.AddTask(wrapper);
 
         // Сохранение ID в выходной JSON

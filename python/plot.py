@@ -1,9 +1,8 @@
 import sys
 import os
+from heat_equation_plotter import HeatEquationPlotter
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'plotters'))
-
-from heat_equation_plotter import HeatEquationPlotter
 
 if __name__ == '__main__':
     if len(sys.argv) < 4:

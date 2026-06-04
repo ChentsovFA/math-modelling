@@ -74,18 +74,18 @@ namespace mm {
         void ExportData(nlohmann::json* output) override;
 
     private:
-        size_t M_;                    
+        size_t M_;                    // Число разбиений на единицу длины
         size_t numThreads_;           // Количество потоков
-        T h_;                         
-        std::vector<T> u_;            //текущий слой
+        T h_;                         // Шаг сетки
+        std::vector<T> u_;            // Текущий слой
         std::vector<T> u_next_;       // Следующий слой
-        InitialFunc initial_;         //Начальное условие
+        InitialFunc initial_;         // Начальное условие
 
-        //размеры сетки
+        // Размеры сетки
         size_t Nx() const { return 3 * M_ + 1; }
         size_t Ny() const { return 3 * M_ + 1; }
 
-        //ндексация: i - по y, j - по x
+        // Индексация: i - по y, j - по x
         size_t Index(size_t i, size_t j) const { return i * Nx() + j; }
 
         // Координаты узлов сетки
@@ -113,7 +113,8 @@ namespace mm {
          *
          * @param i Индекс по оси Y (строка сетки)
          * @param j Индекс по оси X (столбец сетки)
-         * @return true - точка внутри области и не на границе, false - точка на границе или в вырезе
+         * @return true - точка внутри области и не на границе,
+         *         false - точка на границе или в вырезе
          */
         bool IsInterior(size_t i, size_t j) const {
             if (IsInCutout(i, j)) return false;
@@ -147,24 +148,26 @@ namespace mm {
                     if (std::abs(y) < 1e-12 && x >= 0 && x <= 3.0) {
                         u_[Index(i, j)] = 0;
                     }
-                    // Левая граница: u = y
                     else if (std::abs(x) < 1e-12 && y >= 0 && y <= 3.0) {
+                        // Левая граница: u = y
                         u_[Index(i, j)] = y;
                     }
-                    // Правая верхняя часть: u = 4
                     else if (std::abs(x - 3.0) < 1e-12 && y >= 2.0 && y <= 3.0) {
+                        // Правая верхняя часть: u = 4
                         u_[Index(i, j)] = 4;
                     }
-                    // Верхняя часть выреза: u = 1 + x
-                    else if (std::abs(y - 2.0) < 1e-12 && x >= 2.0 && x <= 3.0 && !IsInCutout(i, j)) {
+                    else if (std::abs(y - 2.0) < 1e-12 && x >= 2.0 && x <= 3.0 &&
+                        !IsInCutout(i, j)) {
+                        // Верхняя часть выреза: u = 1 + x
                         u_[Index(i, j)] = 1 + x;
                     }
-                    // Нижняя часть выреза: u = 2 - x
-                    else if (std::abs(y - 1.0) < 1e-12 && x >= 2.0 && x <= 3.0 && !IsInCutout(i, j)) {
+                    else if (std::abs(y - 1.0) < 1e-12 && x >= 2.0 && x <= 3.0 &&
+                        !IsInCutout(i, j)) {
+                        // Нижняя часть выреза: u = 2 - x
                         u_[Index(i, j)] = 2 - x;
                     }
-                    // Правая нижняя часть: u = -y
                     else if (std::abs(x - 3.0) < 1e-12 && y >= 0 && y <= 1.0) {
+                        // Правая нижняя часть: u = -y
                         u_[Index(i, j)] = -y;
                     }
                     else if (initial_) {
@@ -178,16 +181,18 @@ namespace mm {
         }
 
         /**
-         * @brief Вычисление одного шага по времени для диапазона строк (для параллельных потоков)
+         * @brief Вычисление одного шага по времени для диапазона строк
+         *        (для параллельных потоков)
          *
-         * Для каждой внутренней точки в указанном диапазоне строк вычисляет новое значение
-         * температуры по явной разностной схеме:
+         * Для каждой внутренней точки в указанном диапазоне строк вычисляет
+         * новое значение температуры по явной разностной схеме:
          * u_{i,j}^{n+1} = u_{i,j}^n + τ * Δu_{i,j}^n
          *
          * @param startRow Начальная строка (включительно)
          * @param endRow Конечная строка (исключительно)
          *
-         * @note Потоки не конфликтуют, так как каждый обрабатывает свой непересекающийся диапазон строк
+         * @note Потоки не конфликтуют, так как каждый обрабатывает свой
+         *       непересекающийся диапазон строк
          */
         void MakeStepRange(size_t startRow, size_t endRow) {
             T tau = this->tau;
@@ -199,8 +204,10 @@ namespace mm {
                 for (size_t j = 1; j < N - 1; ++j) {
                     if (!IsInterior(i, j)) continue;
 
-                    T laplacian = (u_[Index(i - 1, j)] - 2 * u_[Index(i, j)] + u_[Index(i + 1, j)]) / h2 +
-                        (u_[Index(i, j - 1)] - 2 * u_[Index(i, j)] + u_[Index(i, j + 1)]) / h2;
+                    T laplacian = (u_[Index(i - 1, j)] - 2 * u_[Index(i, j)] +
+                        u_[Index(i + 1, j)]) / h2 +
+                        (u_[Index(i, j - 1)] - 2 * u_[Index(i, j)] +
+                            u_[Index(i, j + 1)]) / h2;
 
                     u_next_[Index(i, j)] = u_[Index(i, j)] + tau * laplacian;
                 }
@@ -212,13 +219,13 @@ namespace mm {
     bool HeatEquationSolver<T>::MakeStep() {
         size_t N = Nx();
 
-        //проверка ВАЖНОГО условия : τ ≤ h²/4
+        // Проверка условия устойчивости: τ ≤ h²/4
         T maxTau = h_ * h_ / 4.0;
         if (this->tau > maxTau + 1e-12) {
             return false;
         }
 
-        //Параллельное вычисление с использованием std::thread
+        // Параллельное вычисление с использованием std::thread
         std::vector<std::thread> threads;
         size_t rowsPerThread = (N - 2) / numThreads_;
         if (rowsPerThread < 1) rowsPerThread = 1;
@@ -248,24 +255,26 @@ namespace mm {
                 if (std::abs(y) < 1e-12 && x >= 0 && x <= 3.0) {
                     u_next_[Index(i, j)] = 0;
                 }
-                // Левая граница: u = y
                 else if (std::abs(x) < 1e-12 && y >= 0 && y <= 3.0) {
+                    // Левая граница: u = y
                     u_next_[Index(i, j)] = y;
                 }
-                // Правая верхняя часть: u = 4
                 else if (std::abs(x - 3.0) < 1e-12 && y >= 2.0 && y <= 3.0) {
+                    // Правая верхняя часть: u = 4
                     u_next_[Index(i, j)] = 4;
                 }
-                //Верхняя часть выреза: u = 1 + x
-                else if (std::abs(y - 2.0) < 1e-12 && x >= 2.0 && x <= 3.0 && !IsInCutout(i, j)) {
+                else if (std::abs(y - 2.0) < 1e-12 && x >= 2.0 && x <= 3.0 &&
+                    !IsInCutout(i, j)) {
+                    // Верхняя часть выреза: u = 1 + x
                     u_next_[Index(i, j)] = 1 + x;
                 }
-                //Нижняя часть выреза: u = 2 - x
-                else if (std::abs(y - 1.0) < 1e-12 && x >= 2.0 && x <= 3.0 && !IsInCutout(i, j)) {
+                else if (std::abs(y - 1.0) < 1e-12 && x >= 2.0 && x <= 3.0 &&
+                    !IsInCutout(i, j)) {
+                    // Нижняя часть выреза: u = 2 - x
                     u_next_[Index(i, j)] = 2 - x;
                 }
-                // Правая нижняя часть: u = -y
                 else if (std::abs(x - 3.0) < 1e-12 && y >= 0 && y <= 1.0) {
+                    // Правая нижняя часть: u = -y
                     u_next_[Index(i, j)] = -y;
                 }
             }

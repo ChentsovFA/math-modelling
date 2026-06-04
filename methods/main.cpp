@@ -15,8 +15,8 @@
 
 using json = nlohmann::json;
 
-//mm::TasksQueue tasksQueue;
-//Делаю глобальной переменной, чтоб HeatEquationMethod
+// mm::TasksQueue tasksQueue;
+// Делаю глобальной переменной, чтоб HeatEquationMethod
 // имел доступ к очереди задач
 
 int main(int argc, char* argv[]) {

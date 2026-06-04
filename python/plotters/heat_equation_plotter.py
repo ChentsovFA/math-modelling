@@ -23,7 +23,8 @@ class HeatEquationPlotter(AbstractPlotter):
             # Данные с временными слоями (через Solve())
             for frame_data in self.data["data"]:
                 field = np.array(frame_data["data"]["grid"])
-                field_clean = np.where(field is None, np.nan, field).astype(float)
+                field_clean = np.where(
+                    field is None, np.nan, field).astype(float)
                 self.frames.append({
                     'time': frame_data["time"],
                     'field': field_clean
@@ -90,8 +91,8 @@ class HeatEquationPlotter(AbstractPlotter):
 
         ax.set_xlabel('x')
         ax.set_ylabel('y')
-        ax.set_xlim(0, 3)  
-        ax.set_ylim(0, 3)  
+        ax.set_xlim(0, 3)
+        ax.set_ylim(0, 3)
         ax.set_aspect('equal')
         ax.grid(True, alpha=0.3)
 

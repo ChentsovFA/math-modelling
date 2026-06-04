@@ -7,6 +7,7 @@
 #include <random>
 #include <thread>
 #include <chrono>
+#include <iostream>  
 #include <httplib.h>
 #include <nlohmann/json.hpp>
 #include "heat_equation_solver.hpp"
@@ -34,15 +35,15 @@ static void TestBoundaryConditions() {
 
     size_t N = 3 * M + 1;
 
-    //тут функция для безопасного получения значения (проверка на null)
+    // Функция для безопасного получения значения (проверка на null)
     auto getValue = [&](size_t i, size_t j) -> double {
         if (grid[i][j].is_null()) {
-            return 0.0;  //А в вырезе температура не определена!!!!!!!!!
+            return 0.0;  // В вырезе температура не определена
         }
         return grid[i][j].get<double>();
         };
 
-    //Нижняя граница у нас (y=0): u = 0
+    // Нижняя граница (y=0): u = 0
     if (!solver.IsInCutoutPublic(0, 0)) {
         REQUIRE_CLOSE(getValue(0, 0), 0.0, 1e-9);
     }
@@ -53,7 +54,7 @@ static void TestBoundaryConditions() {
         REQUIRE_CLOSE(getValue(0, N / 2), 0.0, 1e-9);
     }
 
-    // А левая граница (x=0): u = y
+    // Левая граница (x=0): u = y
     if (!solver.IsInCutoutPublic(N - 1, 0)) {
         REQUIRE_CLOSE(getValue(N - 1, 0), 3.0, 1e-9);
     }
@@ -79,7 +80,7 @@ static void TestBoundaryConditions() {
         REQUIRE_CLOSE(getValue(y1, N - 1), -1.0, 1e-9);
     }
 
-    //Верхняя часть выреза (y=2, x∈[2,3]): u = 1 + x
+    // Верхняя часть выреза (y=2, x∈[2,3]): u = 1 + x
     size_t x2 = static_cast<size_t>(2.0 / h + 0.5);
     size_t x3 = static_cast<size_t>(3.0 / h + 0.5);
     if (!solver.IsInCutoutPublic(y2, x2)) {
@@ -89,7 +90,7 @@ static void TestBoundaryConditions() {
         REQUIRE_CLOSE(getValue(y2, x3), 4.0, 1e-9);
     }
 
-    // Нижняя ччасть выреза (y=1, x∈[2,3]): u = 2 - x
+    // Нижняя часть выреза (y=1, x∈[2,3]): u = 2 - x
     if (!solver.IsInCutoutPublic(y1, x2)) {
         REQUIRE_CLOSE(getValue(y1, x2), 0.0, 1e-9);
     }
@@ -156,7 +157,7 @@ static void TestMaximumPrinciple() {
         }
     }
 
-    // Максимум не должен превышать максимальное граничное значение (4) --- ЭТО УРЧПЫ!!!!!
+    // Максимум не должен превышать максимальное граничное значение (4)
     REQUIRE(max_val <= 4.0 + 1e-9);
     // Минимум не должен быть меньше минимального граничного значения (-1)
     REQUIRE(min_val >= -1.0 - 1e-9);
@@ -200,8 +201,8 @@ static void TestRandomInitial() {
  * @brief HTTP-тест взаимодействия с сервером.
  */
 static void TestHttpWorkflow() {
-    using namespace httplib;
-    Client cli("localhost", 8080);
+    // Используем httplib без using namespace
+    httplib::Client cli("localhost", 8080);
 
     // Проверяем, запущен ли сервер
     auto chk = cli.Post("/CheckTaskStatus", "{}", "application/json");
@@ -237,14 +238,14 @@ static void TestHttpWorkflow() {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
-    // Скачиваемм данные
+    // Скачиваем данные
     auto down = cli.Post("/DownloadTaskData",
         nlohmann::json{ {"id", task_id} }.dump(),
         "application/json");
     REQUIRE(down != nullptr);
     auto result = nlohmann::json::parse(down->body);
 
-    //проверяем структуру
+    // Проверяем структуру
     REQUIRE(result.contains("data"));
     REQUIRE(!result["data"].empty());
     REQUIRE(result["data"][0]["data"].contains("grid"));
