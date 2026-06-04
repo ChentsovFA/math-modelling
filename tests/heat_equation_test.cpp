@@ -2,8 +2,8 @@
  * @file tests/heat_equation_test.cpp
  * @brief Модульные тесты для решателя теплопроводности.
  */
-#include <math.h>      // C system - для линтера
-// так как просто cmath его не устраивает
+#include <httplib.h>
+// для HTTP-запросов
 #include <cmath>
 // для математических функций
 #include <chrono>
@@ -14,8 +14,6 @@
 // для случайного начального распределения
 #include <thread>
 // для многопоточности
-#include <httplib.h>
-// для HTTP-запросов
 #include <nlohmann/json.hpp>
 // для работы с JSON
 #include "heat_equation_solver.hpp"
