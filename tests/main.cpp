@@ -43,7 +43,8 @@ int main(int argc, char* argv[]) {
 
     if (!std::filesystem::is_directory(dataDir)) {
         if (!std::filesystem::create_directory(dataDir)) {
-            std::cerr << "Can't create output path '" << dataDir << "'!" << std::endl;
+            std::cerr << "Can't create output path '"
+                << dataDir << "'!" << std::endl;
             return -1;
         }
     }

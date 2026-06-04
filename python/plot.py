@@ -1,26 +1,22 @@
 import sys
 import os
 
-# Добавляем путь к папке с платтерами
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'plotters'))
 
 from heat_equation_plotter import HeatEquationPlotter
 
 if __name__ == '__main__':
-
     if len(sys.argv) < 4:
         print('Usage: plot.py <plotter> <json_data_path> <output_path>')
         raise SystemError
 
     plotters = {
-      'heat_equation': HeatEquationPlotter,
+        'heat_equation': HeatEquationPlotter,
     }
 
-    if not (sys.argv[1] in plotters):
+    if sys.argv[1] not in plotters:
         raise SystemError
 
     Plotter = plotters[sys.argv[1]]
-
     plotter = Plotter(sys.argv[2], sys.argv[3])
-
     plotter.plot()
