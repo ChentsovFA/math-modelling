@@ -75,24 +75,24 @@ namespace mm {
 
   private:
     size_t M_;                    // Число разбиений на единицу длины
-        size_t numThreads_;           // Количество потоков
-        T h_;                         // Шаг сетки
-        std::vector<T> u_;            // Текущий слой
-        std::vector<T> u_next_;       // Следующий слой
-        InitialFunc initial_;         // Начальное условие
+    size_t numThreads_;           // Количество потоков
+    T h_;                         // Шаг сетки
+    std::vector<T> u_;            // Текущий слой
+    std::vector<T> u_next_;       // Следующий слой
+    InitialFunc initial_;         // Начальное условие
 
-        // Размеры сетки
-        size_t Nx() const { return 3 * M_ + 1; }
-        size_t Ny() const { return 3 * M_ + 1; }
+    // Размеры сетки
+    size_t Nx() const { return 3 * M_ + 1; }
+    size_t Ny() const { return 3 * M_ + 1; }
 
-        // Индексация: i - по y, j - по x
-        size_t Index(size_t i, size_t j) const { return i * Nx() + j; }
+    // Индексация: i - по y, j - по x
+    size_t Index(size_t i, size_t j) const { return i * Nx() + j; }
 
-        // Координаты узлов сетки
-        T X(size_t j) const { return static_cast<T>(j) * h_; }
-        T Y(size_t i) const { return static_cast<T>(i) * h_; }
+    // Координаты узлов сетки
+    T X(size_t j) const { return static_cast<T>(j) * h_; }
+    T Y(size_t i) const { return static_cast<T>(i) * h_; }
 
-        /**
+       /**
          * @brief Проверка, находится ли точка в вырезе.
          *
          * Вырез: [2,3]×[1,2]
@@ -118,9 +118,9 @@ namespace mm {
          */
         bool IsInterior(size_t i, size_t j) const {
             if (IsInCutout(i, j)) return false;
-            if (i == 0 || i == Ny(
-			) - 1 || j == 0 || j == Nx(
-			) - 1) return false;
+            if (i == 0 || i == Ny()
+              - 1 || j == 0 || j == Nx()
+            - 1) return false;
             return true;
         }
 
@@ -149,26 +149,26 @@ namespace mm {
                     // Нижняя граница: u = 0
                     if (std::abs(y) < 1e-12 && x >= 0 && x <= 3.0) {
                         u_[Index(i, j)] = 0;
-                    } else if (std::abs(x) < 
-					1e-12 && y >= 0 && y <= 3.0) {
+                    } else if (std::abs(x) <
+                    1e-12 && y >= 0 && y <= 3.0) {
                         // Левая граница: u = y
                         u_[Index(i, j)] = y;
                     } else if (std::abs(x - 3.0) < 
-					1e-12 && y >= 2.0 && y <= 3.0) {
+                    1e-12 && y >= 2.0 && y <= 3.0) {
                         // Правая верхняя часть: u = 4
                         u_[Index(i, j)] = 4;
                     } else if (std::abs(y - 2.0) < 
-					1e-12 && x >= 2.0 && x <= 3.0 &&
+                    1e-12 && x >= 2.0 && x <= 3.0 &&
                         !IsInCutout(i, j)) {
                         // Верхняя часть выреза: u = 1 + x
                         u_[Index(i, j)] = 1 + x;
                     } else if (std::abs(y - 1.0) < 
-					1e-12 && x >= 2.0 && x <= 3.0 &&
+                    1e-12 && x >= 2.0 && x <= 3.0 &&
                         !IsInCutout(i, j)) {
                         // Нижняя часть выреза: u = 2 - x
                         u_[Index(i, j)] = 2 - x;
                     } else if (std::abs(x - 3.0) <
-					1e-12 && y >= 0 && y <= 1.0) {
+                    1e-12 && y >= 0 && y <= 1.0) {
                         // Правая нижняя часть: u = -y
                         u_[Index(i, j)] = -y;
                     } else if (initial_) {
@@ -233,8 +233,8 @@ namespace mm {
         for (size_t t = 0; t < numThreads_; ++t) {
             size_t startRow = 1 + t * rowsPerThread;
             size_t endRow = (
-			t == numThreads_ - 1) ? N - 1 : startRow + 
-			rowsPerThread;
+            t == numThreads_ - 1) ? N - 1 : startRow +
+            rowsPerThread;
 
             threads.emplace_back([this, startRow, endRow]() {
                 MakeStepRange(startRow, endRow);
@@ -291,8 +291,8 @@ namespace mm {
         size_t cutoutLeftJ = static_cast<size_t>(2.0 / h_ + 0.5);
         for (size_t i = 1; i < N - 1; ++i) {
             if (!IsInCutout(i, cutoutLeftJ)) {
-                u_next_[Index(i, cutoutLeftJ)] = 
-				u_next_[Index(i, cutoutLeftJ + 1)];
+                u_next_[Index(i, cutoutLeftJ)] =
+                u_next_[Index(i, cutoutLeftJ + 1)];
             }
         }
 

@@ -4,14 +4,14 @@
  */
 
 #include <cmath>
-#include <random>
-#include <thread>
 #include <chrono>
 #include <iostream>
+#include <random>
+#include <thread>
+#include <httplib.h>
 #include <nlohmann/json.hpp>
 #include "heat_equation_solver.hpp"
 #include "test_core.hpp"
-#include <httplib.h>
 
  /**
   * @brief Проверка граничных условий.
@@ -87,7 +87,7 @@ static void TestBoundaryConditions() {
         REQUIRE_CLOSE(getValue(y2, x2), 3.0, 1e-9);
     }
     if (!solver.IsInCutoutPublic(y2, x3)) {
-        REQUIRE_CLOSE(getValue(y2, x3), 4.0, 1e-9);
+		REQUIRE_CLOSE(getValue(y2, x3), 4.0, 1e-9);
     }
 
     // Нижняя часть выреза (y=1, x∈[2,3]): u = 2 - x
@@ -178,7 +178,7 @@ static void TestRandomInitial() {
     auto init_func = [&](size_t, size_t) { return dist(rng); };
 
     mm::HeatEquationSolver<double> solver(
-	M, tau, finishTime, finishTime, init_func);
+    M, tau, finishTime, finishTime, init_func);
     nlohmann::json result;
     bool ok = solver.Solve(&result);
     REQUIRE(ok);
