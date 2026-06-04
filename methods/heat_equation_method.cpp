@@ -17,6 +17,13 @@
 namespace mm {
 
     //вспомогательная функция для начальных условий
+/**
+ * @brief Создание функции начального условия по строковому типу
+ *
+ * @param type Тип начального условия ("zero", "random", "sin")
+ * @param M Количество разбиений (нужно для sin)
+ * @return Функция начального условия или nullptr
+ */
     static typename HeatEquationSolver<double>::InitialFunc
         MakeInitial(const std::string& type, size_t M = 0) {
         if (type == "zero" || type.empty()) {
@@ -38,7 +45,16 @@ namespace mm {
         }
         return nullptr;
     }
-
+    /**
+ * @brief Серверный метод для решения уравнения теплопроводности
+ *
+ * Парсит JSON с параметрами, создаёт решатель и добавляет задачу в очередь
+ *
+ * @param input Входной JSON с параметрами (M, tau, finishTime, exportPeriod, num_threads, initial)
+ * @param output Выходной JSON для записи ID задачи
+ * @param tasksQueue Очередь задач сервера
+ * @return ID созданной задачи
+ */
     int HeatEquationMethod(const nlohmann::json& input,
         nlohmann::json* output,
         mm::TasksQueue& tasksQueue) {
